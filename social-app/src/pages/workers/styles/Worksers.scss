@@ -1,0 +1,14 @@
+@use '../../../sass/abstract/' as *;
+
+
+.active
+{
+    background-color: green;
+    color: white;
+}
+
+.inactive
+{
+    background-color: grey;
+    // color: white;
+}
