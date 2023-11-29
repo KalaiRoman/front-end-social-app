@@ -17,7 +17,6 @@ export const LoginAction = (data, navigate, setLoginError) => async (dispatch) =
     try {
         const response = await LoginUser(data);
 
-        console.log(response, 'response')
         localStorage.setItem("accesstoken", JSON.stringify(response?.data?.token));
         navigate("/otp")
     }

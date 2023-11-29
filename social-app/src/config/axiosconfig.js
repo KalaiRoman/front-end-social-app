@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(function (config) {
     // Do something before request is sent
     const token = localStorage.getItem("accesstoken");
-    config.headers.Authorization = `bearer ${token}`;
+    config.headers.Authorization = `bearer ${JSON.parse(token)}`;
     return config;
 }, function (error) {
     // Do something with request error

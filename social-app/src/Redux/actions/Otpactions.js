@@ -1,5 +1,6 @@
 import { otpservice, otpserviceCheck } from "../../services/login_services/login_services";
 import { otpFail, otpRequest, otpSuccess } from "../reducers/Otp_reducer"
+import { ProfileActions } from "./Profileactions";
 
 
 
@@ -24,7 +25,11 @@ export const PostotpActions = (data, setError, router) => async (dispatch) => {
     try {
         const response = await otpserviceCheck(data);
         if (response) {
-            router("/dashboard")
+            router("/home")
+            dispatch(
+                ProfileActions()
+
+            )
         }
     } catch (error) {
         setError(error?.response?.data?.message);
