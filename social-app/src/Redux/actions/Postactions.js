@@ -1,5 +1,5 @@
 
-import { CreatePost, GetPost, GetSingleDeletePost, GetSinglePost } from "../../services/post_services/post_services";
+import { CreatePost, GetPost, GetSingleDeletePost, GetSinglePost, PostCommand, PostCommandDelete, PostLike } from "../../services/post_services/post_services";
 import { toast } from 'react-toastify';
 import { postRequest, postSingleUser, postSuccess, postsFail } from "../reducers/Post_reducer";
 
@@ -52,7 +52,7 @@ export const PostCreateActions = (data, handleClose) => async (dispatch) => {
         if (response) {
             toast.success("Create New Post");
             dispatch(GetPostActions());
-            dispatch(GetSinglePostActions());
+            // dispatch(GetSinglePostActions());
             handleClose();
         }
     } catch (error) {
@@ -79,3 +79,67 @@ export const PostDeleteActions = (data) => async (dispatch) => {
 
 
 
+
+
+export const PostLikeActions = (data) => async (dispatch) => {
+    try {
+
+
+        const token = localStorage.getItem("accesstoken");
+
+        const check = await jwt_decode(token);
+        const response = await PostLike(data, {
+            userid: check?.id
+        });
+
+        if (response) {
+            dispatch(GetPostActions());
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+export const PostCommandActions = (data, texts, setLoading) => async (dispatch) => {
+    setLoading(true);
+
+    try {
+
+
+        const token = localStorage.getItem("accesstoken");
+
+        const check = await jwt_decode(token);
+        const response = await PostCommand(data, {
+            userid: check?.id,
+            desc: texts
+        });
+
+        if (response) {
+            setLoading(false);
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export const PostCommandDeleteActions = (data, commandid, setLoading) => async (dispatch) => {
+    setLoading(true);
+
+    try {
+
+        const token = localStorage.getItem("accesstoken");
+        const check = await jwt_decode(token);
+        const response = await PostCommandDelete(data, {
+            userid: check?.id,
+            commandid: commandid
+        });
+
+        setLoading(false);
+
+    } catch (error) {
+        console.log(error)
+    }
+}

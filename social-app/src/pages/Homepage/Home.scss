@@ -931,3 +931,21 @@ header {
   margin: 0 auto;
 }
 /* Footer finished */
+
+.completed {
+  font-size: 1.3rem;
+  color: red;
+  cursor: pointer;
+}
+
+.uncompleted {
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.post-img {
+  width: 100% !important;
+  height: 300px !important;
+  object-fit: contain !important;
+  padding: 2% 0px;
+}

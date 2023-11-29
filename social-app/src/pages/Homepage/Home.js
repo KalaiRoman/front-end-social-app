@@ -4,13 +4,24 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { toast } from 'react-toastify';
-import { GetPostActions, PostCreateActions, PostDeleteActions } from '../../Redux/actions/Postactions';
+import { GetPostActions, PostCommandActions, PostCommandDeleteActions, PostCreateActions, PostDeleteActions, PostLikeActions } from '../../Redux/actions/Postactions';
 import jwt_decode from "jwt-decode";
 import { useDispatch, useSelector } from 'react-redux';
 
 import moment from 'moment';
 
+import TimeAgo from 'javascript-time-ago'
+
+
+
+
 function Home({ state }) {
+
+
+    const [loading, setLoading] = useState(false);
+
+
+    const [commands, setCommands] = useState("");
 
 
     const dispatch = useDispatch();
@@ -53,14 +64,14 @@ function Home({ state }) {
 
     useEffect(() => {
         dispatch(GetPostActions());
-    }, [state])
+    }, [state, loading])
 
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const DeletePost = async (postid, userid ) => {
+    const DeletePost = async (postid, userid) => {
         try {
 
             const data = {
@@ -71,6 +82,32 @@ function Home({ state }) {
             await dispatch(PostDeleteActions(data));
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    const Postliked = async (ids) => {
+
+        await dispatch(PostLikeActions(ids))
+    }
+
+
+    const PostCommands = async (id) => {
+        try {
+
+            await dispatch(PostCommandActions(id, commands, setLoading));
+            setCommands("");
+        } catch (error) {
+
+        }
+    }
+
+
+    const DeletCommand = async (id, cid) => {
+        try {
+
+            await dispatch(PostCommandDeleteActions(id, cid, setLoading));
+        } catch (error) {
+
         }
     }
     return (
@@ -167,10 +204,12 @@ function Home({ state }) {
                                         <div key={index}>
                                             <div class="post mt-4 mb-5">
                                                 <div class="tb">
-                                                    <a href="#" class="td p-p-pic"><img src={item?.user?.profileimage} alt="Rajeev's profile pic" /></a>
+                                                    <div class="td p-p-pic cursor-pointer"><img src={item?.user?.profileimage} alt="Rajeev's profile pic" /></div>
                                                     <div class="td p-r-hdr">
-                                                        <div class="p-u-info">
-                                                            <a href="#">{item?.user?.username}</a>
+                                                        <div class="p-u-info" onClick={() => {
+                                                            window.location.assign("/profile")
+                                                        }}>
+                                                            <>{item?.user?.username}</>
                                                         </div>
                                                         <div class="p-dt">
                                                             <i class="material-icons"></i>
@@ -183,16 +222,60 @@ function Home({ state }) {
                                                                 Delete
                                                             </Button>
                                                         }
-
                                                     </div>
-
                                                 </div>
-                                                <a href="#" class="p-cnt-v">
-                                                    <img src={item?.postImageUrl} />
-                                                </a>
+                                                <div class="p-cnt-v">
+                                                    <img src={item?.postImageUrl} className='post-img' />
+                                                </div>
                                                 <div>
                                                     <div class="p-acts">
                                                         <div class="p-act like"><div class="material-icons">{item?.userCommand}</div><span></span></div>
+                                                    </div>
+
+                                                    <div className='d-flex gap-2 align-items-center ' onClick={() => Postliked(item?._id)}>
+                                                        {true ? <>
+                                                            <i class="fa-solid fa-heart completed"></i>
+
+                                                        </> : <>
+                                                            <i class="fa-regular fa-heart uncompleted"></i>
+
+                                                        </>}
+
+                                                        <div>
+                                                            {item?.likes?.length}
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div>
+                                                        {item?.postcommands?.map((items, index) => {
+
+                                                            return (
+                                                                <div>
+                                                                    <div>
+                                                                    {items?.desc}
+
+                                                                    </div>
+                                                                    {check?.id === items?.user && <Button variant='danger' onClick={() => DeletCommand(item?._id, items?._id)}>
+                                                                        delete
+                                                                    </Button>}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+
+
+                                                    <div className='d-flex align-align-items-center justify-content-center'>
+                                                        <div className='col-lg-8'>
+                                                            <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                                <Form.Control type="url" placeholder="Enter Command" name="commands" value={commands} onChange={(e) => setCommands(e?.target?.value)} />
+                                                                <Form.Text className="text-muted">
+                                                                </Form.Text>
+                                                            </Form.Group>
+                                                        </div>
+                                                        <div className=' col-lg-4 '>
+                                                            <Button className=' w-75 h-auto ms-2' onClick={() => PostCommands(item?._id)}>Send</Button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -202,7 +285,6 @@ function Home({ state }) {
                                 })}
 
                             </div>
-                            <div id="loading"><i class="material-icons">autorenew</i></div>
                         </div>
                         <div class="td" id="r-col">
                             <div id="chat-bar">
@@ -236,7 +318,7 @@ function Home({ state }) {
                     </div>
                 </div>
                 <div id="device-bar-2"><i class="fab fa-apple"></i></div>
-            </div>
+            </div >
 
 
             <Modal

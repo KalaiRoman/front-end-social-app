@@ -45,3 +45,37 @@ export function GetSingleDeletePost(data) {
         })
     })
 }
+
+export function PostLike(id, data) {
+
+    return new Promise((resolve, reject) => {
+        axiosInstance.put(`/post/like/${id}`, data).then((res) => {
+            resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    })
+}
+
+export function PostCommand(id, data) {
+
+    return new Promise((resolve, reject) => {
+        axiosInstance.put(`/post/command/${id}`, data).then((res) => {
+            resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    })
+}
+
+
+export function PostCommandDelete(id, data) {
+
+    return new Promise((resolve, reject) => {
+        axiosInstance.post(`/post/command/delete/${id}`, data).then((res) => {
+            resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    })
+}
