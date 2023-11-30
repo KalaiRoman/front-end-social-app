@@ -79,3 +79,15 @@ export function PostCommandDelete(id, data) {
         })
     })
 }
+
+
+export function FollowUser(id, data) {
+
+    return new Promise((resolve, reject) => {
+        axiosInstance.put(`/post/follow/${id}`, data).then((res) => {
+            resolve(res)
+        }).catch((err) => {
+            reject(err);
+        })
+    })
+}

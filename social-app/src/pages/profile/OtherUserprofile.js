@@ -8,12 +8,20 @@ import { GetSinglePostActions, PostCommandActions, PostCommandDeleteActions, Pos
 import jwt_decode from "jwt-decode";
 import { toast } from 'react-toastify';
 
-function Profile({ state }) {
+import { useLocation } from "react-router-dom";
+import { OtherUserPosts } from '../../Redux/actions/Otheruseractions';
+import { getUserdata } from '../../services/user_services/user_services';
 
 
+function OtherUserprofile({ state }) {
+
+
+    const [getSingleUser, setGetSingleUser] = useState({});
+
+
+    const id = useLocation();
 
     const [loading, setLoading] = useState(false);
-
 
     const [commands, setCommands] = useState("");
 
@@ -28,9 +36,9 @@ function Profile({ state }) {
 
     const dispatch = useDispatch();
 
-    const statepost = useSelector((state) => state?.postdata?.singleUserPost?.responsePost);
+    const statepost = useSelector((state) => state);
 
-    console.log(statepost, 'statepost')
+    console.log(statepost?.otheruserpost?.Otheruserpost, 'statepost')
 
     const clearstore = () => {
         localStorage.clear();
@@ -38,8 +46,14 @@ function Profile({ state }) {
     }
 
     useEffect(() => {
-        dispatch(GetSinglePostActions());
-    }, [state])
+        dispatch(OtherUserPosts(id?.state));
+
+        getUserdata(id?.state).then((res) => {
+            setGetSingleUser(res?.data);
+        }).catch((err) => {
+
+        })
+    }, [state, id?.state])
 
     const [postdata, setPostData] = useState({
         url: "",
@@ -116,15 +130,15 @@ function Profile({ state }) {
         <>
             <div>
                 <div id="profile-banner-images">
-                    <img src={state?.bannerimage} alt="Banner image" />
+                    <img src={getSingleUser?.bannerimage} alt="Banner image" />
                 </div>
                 <div id="profile-upper">
 
                     <div id="profile-d">
                         <div id="profile-pic">
-                            <img src={state?.profileimage} />
+                            <img src={getSingleUser?.profileimage} />
                         </div>
-                        <div id="u-name">{state?.username}</div>
+                        <div id="u-name">{getSingleUser?.username}</div>
                         <div class="tb" id="m-btns">
                         </div>
                     </div>
@@ -152,7 +166,7 @@ function Profile({ state }) {
                                 </div>
                                 <div id="photos mb-4">
                                     <div class="row d-flex ">
-                                        {statepost?.map((item, index) => {
+                                        {statepost?.otheruserpost?.Otheruserpost?.map((item, index) => {
                                             return (
                                                 <>
                                                     <div className='cards col-lg-4'>
@@ -214,7 +228,7 @@ function Profile({ state }) {
                                 </div>
                             </div>
                             <div>
-                                {statepost?.map((item, index) => {
+                                {statepost?.otheruserpost?.Otheruserpost?.map((item, index) => {
                                     return (
                                         <div key={index}>
                                             <div class="post mt-4 mb-5">
@@ -346,7 +360,7 @@ function Profile({ state }) {
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <div className='d-flex gap-3 align-items-center'>
-                            <span><img src={state?.profileimage} alt="Profile pic" style={{
+                            <span><img src={getSingleUser?.profileimage} alt="Profile pic" style={{
                                 width: "70px",
                                 height: "70px",
                                 borderRadius: "50%"
@@ -381,4 +395,4 @@ function Profile({ state }) {
     )
 }
 
-export default Profile
+export default OtherUserprofile

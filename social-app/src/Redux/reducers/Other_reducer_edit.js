@@ -1,26 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-
-const Bike_slice = createSlice({
-    name: "bikeshops",
+const Other_userpost_editor = createSlice({
+    name: "othruserpost",
     initialState: {
         loading: false,
-        bikeshop: [],
-        singlebikeshop:[]
+        Otheruserpost: []
     },
     reducers: {
-        bikeRequest(state, action) {
+        OtheruserpostRequest(state, action) {
             return {
                 loading: true
             }
         },
-        bikeSuccess(state, action) {
+        OtheruserpostSuccess(state, action) {
             return {
                 loading: false,
-                bikeshop: action.payload
+                Otheruserpost: action.payload
             }
         },
-        bikeFail(state, action) {
+        OtheruserpostFail(state, action) {
             return {
                 loading: false,
                 error: action.payload
@@ -30,9 +27,9 @@ const Bike_slice = createSlice({
 })
 
 
-const { actions, reducer } = Bike_slice;
+const { actions, reducer } = Other_userpost_editor;
 
 
-export const { bikeRequest, bikeSuccess, bikeFail } = actions;
+export const { OtheruserpostRequest, OtheruserpostSuccess, OtheruserpostFail } = actions;
 
 export default reducer;

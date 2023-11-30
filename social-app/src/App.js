@@ -10,6 +10,7 @@ import Home from './pages/Homepage/Home';
 import Profile from './pages/profile/Profile';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileActions } from './Redux/actions/Profileactions';
+import OtherUserprofile from './pages/profile/OtherUserprofile';
 
 const Login = lazy(() => import('./pages/login/Login.js'));
 const Signup = lazy(() => import('./pages/signup/Signup.js'));
@@ -74,7 +75,11 @@ function App() {
           <Route path="/register" element={<Signup />}></Route>
           <Route element={<ProtectedRoutes></ProtectedRoutes>}>
             <Route path="/home" element={<Home state={state} />}></Route>
+            <Route path="/dashboard" element={<Dashboard state={state} />}></Route>
+
             <Route path="/profile" element={<Profile state={state} />}></Route>
+            <Route path="/otherprofile" element={<OtherUserprofile />}></Route>
+
             <Route path="/bikeshop" element={<Bikeshopcreate />}></Route>
             <Route path="/workers" element={<Workers />}></Route>
             <Route path="/bikecomment/:id" element={<BikeComments />}></Route>

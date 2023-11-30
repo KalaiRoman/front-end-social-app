@@ -11,11 +11,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import TimeAgo from 'javascript-time-ago'
+import { ProfileAllUsersActions } from '../../Redux/actions/Profileactions';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
 function Home({ state }) {
+
+    const navigate = useNavigate();
+
+    const dispatch = useDispatch();
+
+
+    const [locations, setLocations] = useState([]);
+
+
+
+    function showPosition(position) {
+        setLocations(position?.coords);
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            toast.error("Geolocation is not supported by this browser.")
+        }
+    }
+
 
 
     const [loading, setLoading] = useState(false);
@@ -24,9 +48,14 @@ function Home({ state }) {
     const [commands, setCommands] = useState("");
 
 
-    const dispatch = useDispatch();
 
-    const statepost = useSelector((state) => state?.postdata?.postData?.responsePost)
+    const alldata = useSelector((state) => state)
+    // const allusers = useSelector((state) => state?.profile?.allUsers)
+
+    console.log(alldata, 'alldata')
+
+
+
 
 
     const token = localStorage.getItem("accesstoken");
@@ -110,6 +139,12 @@ function Home({ state }) {
 
         }
     }
+
+    useEffect(() => {
+        getLocation()
+        dispatch(ProfileAllUsersActions());
+    }, [])
+
     return (
         <>
             <div>
@@ -134,23 +169,37 @@ function Home({ state }) {
                                     <span>Followers</span>
                                 </div>
                                 <div id="photos">
-                                    <div class="tb">
-                                        <div class="tr">
-                                            <div class="td"></div>
-                                            <div class="td"></div>
-                                            <div class="td"></div>
-                                        </div>
-                                        <div class="tr">
-                                            <div class="td"></div>
-                                            <div class="td"></div>
-                                            <div class="td"></div>
-                                        </div>
-                                        <div class="tr">
-                                            <div class="td"></div>
-                                            <div class="td"></div>
-                                            <div class="td"></div>
-                                        </div>
-                                    </div>
+                                    {alldata?.allusers?.allusers?.map((item, index) => {
+                                        return (
+                                            <div key={index}>
+                                                <div className='d-flex gap-4 align-items-center mb-4 mt-2 cursor-pointer' style={{ cursor: "pointer" }}
+                                                >
+
+                                                    <div>
+                                                        <img src={item?.profileimage} alt="Rajeev's profile pic" style={{
+                                                            width: "50px",
+                                                            height: "50px",
+                                                            borderRadius: "50%"
+                                                        }}
+                                                            onClick={() => {
+                                                                navigate(`/otherprofile`, {
+                                                                    state: item?._id
+                                                                })
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <h5> {item?.username}</h5>
+                                                    </div>
+                                                    <div>
+                                                        <Button>
+                                                            Follow
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                             <div class="l-cnt l-mrg">
@@ -199,7 +248,7 @@ function Home({ state }) {
                             </div>
                             <div>
 
-                                {statepost?.map((item, index) => {
+                                {alldata?.postdata?.postData?.responsePost?.map((item, index) => {
                                     return (
                                         <div key={index}>
                                             <div class="post mt-4 mb-5">
@@ -253,7 +302,7 @@ function Home({ state }) {
                                                             return (
                                                                 <div>
                                                                     <div>
-                                                                    {items?.desc}
+                                                                        {items?.desc}
 
                                                                     </div>
                                                                     {check?.id === items?.user && <Button variant='danger' onClick={() => DeletCommand(item?._id, items?._id)}>

@@ -5,7 +5,7 @@ const Profile_slice = createSlice({
     name: "profile",
     initialState: {
         loading: false,
-        profileData: []
+        profileData: [],
     },
     reducers: {
         profileRequest(state, action) {
@@ -24,7 +24,8 @@ const Profile_slice = createSlice({
                 loading: false,
                 error: action.payload
             }
-        }
+        },
+      
     }
 })
 
@@ -32,6 +33,6 @@ const Profile_slice = createSlice({
 const { actions, reducer } = Profile_slice;
 
 
-export const { profileRequest, profileSuccess, profileFail } = actions;
+export const { profileRequest, profileSuccess, profileFail} = actions;
 
 export default reducer;

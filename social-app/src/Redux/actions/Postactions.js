@@ -26,13 +26,8 @@ export const GetPostActions = () => async (dispatch) => {
 export const GetSinglePostActions = () => async (dispatch) => {
     dispatch(postRequest())
     try {
-
-
         const token = localStorage.getItem("accesstoken");
-
         const check = await jwt_decode(token);
-
-
         const response = await GetSinglePost(check?.id);
         if (response) {
             dispatch(postSingleUser(response?.data))
